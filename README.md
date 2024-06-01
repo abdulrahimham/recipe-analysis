@@ -41,11 +41,7 @@ These data cleaning steps were crucial for ensuring the accuracy and reliability
 
 ### Cleaned DataFrame Head
 
-Here is a preview of the cleaned DataFrame:
-
-```python
-cleaned_df_head
-```
+<iframe src="assets/cleaned_dataframe_head.html" width="100%" height="300" frameborder="0"></iframe>
 
 ## Univariate Analysis
 
@@ -70,3 +66,17 @@ This plot shows the distribution of preparation times for recipes. Most recipes 
 ></iframe>
 
 This plot displays the distribution of average ratings for recipes. The majority of recipes have ratings between 3.5 and 5, indicating that users generally rate recipes positively. Notably, a significant number of recipes have a perfect rating of 5, suggesting that users are quite satisfied with many of the recipes.
+
+## Interesting Aggregates
+
+### Grouped by Preparation Time
+
+<iframe src="assets/grouped_by_time.html" width="800" height="200" frameborder="0"></iframe>
+
+This table shows the average rating of recipes grouped by preparation time. By examining the average ratings for different preparation times, we can identify if there is a preference for quicker or longer recipes among users. This analysis is significant because it can provide insights into user preferences, helping recipe creators and food bloggers to tailor their content. For instance, if recipes with shorter preparation times consistently receive higher ratings, this might indicate that users prefer quick and easy recipes, which can guide future recipe development and marketing strategies.
+
+### Grouped by Calories
+
+<iframe src="assets/grouped_by_calories.html" width="800" height="200" frameborder="0"></iframe>
+
+This table shows the average rating of recipes grouped by calorie content. By analyzing the average ratings for different calorie ranges, we can understand if there is a correlation between the healthiness of a recipe (as indicated by calorie content) and its popularity (as indicated by user ratings). This analysis is significant because it can help identify trends in user preferences regarding healthier versus more indulgent recipes. For example, if lower-calorie recipes tend to have higher ratings, this might suggest a growing interest in healthy eating among users, which can inform recipe development and content creation for health-conscious audiences.
