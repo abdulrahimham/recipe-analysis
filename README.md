@@ -112,8 +112,7 @@ This table shows the average rating of recipes grouped by calorie content. By an
 - Observed Difference: 117.34
 - P-value: 0.039
 
-The permutation test for preparation time shows an observed difference of 117.34 minutes, with a p-value of 0.039. This suggests a statistically significant relationship between missing ratings and longer preparation times.
-
+The permutation test for the minutes column aims to determine if there is a significant difference in preparation times between recipes with missing and non-missing average ratings. The histogram represents the distribution of mean differences obtained from 1000 permutations. The observed difference (117.34 minutes) is shown as a red dashed line. The p-value of 0.039 indicates a statistically significant difference, suggesting that recipes with missing average ratings tend to have longer preparation times.
 #### Calories
 
 <iframe
@@ -127,7 +126,6 @@ The permutation test for preparation time shows an observed difference of 117.34
 - Observed Difference: 87.86
 - P-value: 0.0
 
-The permutation test for calories shows an observed difference of 87.86, with a p-value of 0.0. This indicates a highly significant relationship between missing ratings and higher calorie content.
-
+The permutation test for the calories column evaluates whether there is a significant difference in calorie content between recipes with missing and non-missing average ratings. The histogram displays the distribution of mean differences from 1000 permutations, with the observed difference (87.86 calories) marked by the red dashed line. The p-value of 0.0 indicates a highly significant difference, implying that recipes with missing average ratings have different calorie contents compared to those with ratings.
 
 
