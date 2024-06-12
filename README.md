@@ -99,7 +99,7 @@ This table shows the average rating of recipes grouped by calorie content. By an
 
 ### NMAR Analysis
 
-We believe that the `average_rating` column in our dataset is likely NMAR (Not Missing At Random). The missingness in this column may be due to the inherent nature of the recipes themselves, such as being overly complex, having unappealing ingredients, or not being discovered by users. This type of missingness is related to the missing data itself rather than other observed data in the dataset.
+In our dataset, we need to determine if there are any columns for which the missing data is likely Not Missing At Random (NMAR). After examining the data generating process, I believe the `average_rating` column may be NMAR. The reasoning behind this is that users might not rate a recipe if they found it extremely dissatisfactory or if they did not prepare it at all. To further investigate this, additional data such as user feedback or reasons for not rating could be collected. This would help explain the missingness and potentially reclassify it as Missing At Random (MAR).
 
 To potentially reclassify this missingness as MAR (Missing At Random), we would need additional data to explain why some recipes have missing ratings. This additional data could include:
 - **Recipe Visibility Data**: Information on how often a recipe is viewed by users.
@@ -109,18 +109,22 @@ To potentially reclassify this missingness as MAR (Missing At Random), we would 
 
 By analyzing this additional data, we could better understand the reasons behind the missing ratings and potentially explain the missingness through observed data, thus making it MAR.
 
+### Missing Dependency
+
+To analyze the dependency of the missingness of `average_rating` on other columns, I performed permutation tests. Specifically, I looked at the dependency on `minutes` (preparation time) and `calories`.
+
 ### Permutation Test for Missingness Dependency
 
 #### Preparation Time
 
-<iframe src="assets/permutation_test_minutes.html" width="800" height="600" frameborder="0"></iframe>
+<iframe src="assets/permutation_test_preparation_time.html" width="800" height="600" frameborder="0"></iframe>
 
 
 **Column: minutes**
-- Observed Difference: -70.03177331375849
-- P-value: 0.418
+- Observed Difference: -70.0318
+- P-value: 0.394
 
-The permutation test for preparation time shows a high p-value (0.418), indicating that there is no significant difference in preparation times between recipes with missing and non-missing ratings.
+The permutation test for preparation time shows a high p-value (0.0394), indicating that there is no significant difference in preparation times between recipes with missing and non-missing ratings.
 
 
 #### Calories
@@ -129,10 +133,12 @@ The permutation test for preparation time shows a high p-value (0.418), indicati
 
 
 **Column: calories**
-- Observed Difference: 456.9784652844917
-- P-value: 0.082
+- Observed Difference: 456.9785
+- P-value: 0.079
 
-The permutation test for calories shows a p-value (0.082), which is closer to the significance threshold. This suggests a potential association between calorie content and missing ratings, but it is not definitive.
+The permutation test for calories shows a p-value (0.079), which is closer to the significance threshold. This suggests a potential association between calorie content and missing ratings, but it is not statistically significant at the conventional 0.05 level.
+
+These results indicate that the missingness of `average_rating` might be influenced by factors other than `minutes` and `calories`. Further investigation into other potential factors or collecting additional data could provide more insights.
 
 ## Hypothesis Testing
 
@@ -147,6 +153,10 @@ We want to investigate if the complexity or simplicity of a recipe (measured by 
 - **Significance Level:** 0.05
 
 The difference in means is a straightforward and interpretable measure of the effect size, allowing us to see if there is a meaningful difference in ratings based on the number of ingredients. The significance level of 0.05 is a standard threshold in statistical hypothesis testing, balancing the risk of Type I and Type II errors.
+
+### Method:
+- A permutation test was conducted to determine if the average rating of a recipe depends on the number of ingredients.
+- The dataset was split into two groups: recipes with a low number of ingredients and recipes with a high number of ingredients, using the median number of ingredients as the threshold.
 
 <iframe
   src="assets/permutation_test_ingredients.html"
@@ -179,14 +189,34 @@ We are using the Mean Absolute Error (MAE) to evaluate our model. The MAE measur
 
 At the time of prediction, we would know the features of the recipes such as the number of ingredients, preparation time, and nutritional information. Using these features to predict the average rating is reasonable and ensures that we are not using any future information in our model.
 
+### Features Used
+
+- `minutes`: The preparation time of the recipe.
+- `n_ingredients`: The number of ingredients used in the recipe.
+- `calories`: The calorie content of the recipe.
+- `total_fat`: The total fat content of the recipe.
+- `sugar`: The sugar content of the recipe.
+- `sodium`: The sodium content of the recipe.
+- `protein`: The protein content of the recipe.
+- `saturated_fat`: The saturated fat content of the recipe.
+- `carbohydrates`: The carbohydrate content of the recipe.
+
+These features are relevant because they provide a comprehensive view of the recipe's characteristics, which can influence user ratings.
+
+### Model Training and Evaluation
+
+We trained a RandomForestRegressor model using the features mentioned above. The model was evaluated using the Mean Absolute Error (MAE) on a test set. This evaluation helps us understand how well the model predicts the average rating of unseen recipes.
+
+### Model Performance
+
+Mean Absolute Error: 0.4781631198009695
+
 <iframe
   src="assets/prediction_error_distribution.html"
   width="800"
   height="600"
   frameborder="0"
 ></iframe>
-
-*Mean Absolute Error: 0.4781631198009695*
 
 ## Baseline Model
 
@@ -211,8 +241,6 @@ The baseline model's performance was evaluated using the mean absolute error (MA
 
 This value indicates the average magnitude of errors in the model's predictions, with a lower value representing better performance. Although the baseline model provides a starting point for our predictions, it is relatively simple and may not capture more complex relationships in the data.
 
-### Visualization of Model Performance
-
 <iframe src="assets/baseline_model_errors.html" width="800" height="600" frameborder="0"></iframe>
 
 The histogram above shows the distribution of prediction errors for the baseline model. The majority of errors are centered around zero, indicating that the model's predictions are reasonably accurate. However, there is a spread of errors, suggesting that there is room for improvement.
@@ -220,28 +248,28 @@ The histogram above shows the distribution of prediction errors for the baseline
 By starting with this baseline model, we have a benchmark to compare against as we explore more sophisticated modeling techniques and feature engineering in the next steps.
 
 
-### Final Model
+## Final Model
 
-#### Features Added and Their Justification
+### Model Description
+For the final model, I aimed to improve the baseline model by engineering new features and tuning hyperparameters. I used a RandomForestRegressor due to its ability to handle non-linear relationships and interactions between features.
 
-For the final model, I engineered additional features to improve the prediction of average ratings. These features were chosen based on their potential to capture more complex relationships in the data:
-
+### Features Added
 1. **Log of Preparation Time (`log_minutes`)**: The logarithm of preparation time was used to handle the skewness in the distribution of preparation times and to capture non-linear relationships.
 2. **Interaction between Preparation Time and Number of Ingredients (`interaction`)**: This feature captures the combined effect of preparation time and number of ingredients, which may impact the complexity and perceived quality of a recipe.
-3. **Squared Preparation Time (`minutes_squared`)**: This quadratic term helps to model non-linear effects of preparation time on ratings.
-4. **Squared Number of Ingredients (`n_ingredients_squared`)**: Similarly, this quadratic term helps to model non-linear effects of the number of ingredients on ratings.
 
-These features were expected to improve the model's performance by providing a more nuanced representation of the data, allowing the model to capture complex relationships between the variables.
+These features were added because they provide additional insights into the data. The log transformation helps normalize the distribution of preparation times, and the interaction term captures the combined effect of preparation time and the number of ingredients, which may influence user ratings.
 
-#### Modeling Algorithm and Hyperparameters
+### Feature Encoding
+All features in the final model are quantitative. Standard scaling was applied to normalize the feature values, ensuring that the model treats each feature equally regardless of its scale.
 
-The chosen algorithm for the final model was the Gradient Boosting Regressor, which is known for its high performance and ability to handle complex data well. The hyperparameters that ended up performing the best were identified using GridSearchCV:
+### Hyperparameter Tuning
+The following hyperparameters were tuned using GridSearchCV:
+- **Number of Estimators (n_estimators)**: The number of trees in the forest. Options: [50, 100, 200]
+- **Maximum Depth (max_depth)**: The maximum depth of the trees. Options: [None, 10, 20, 30]
 
-- **`n_estimators`**: 100 (number of boosting stages to be run)
-- **`max_depth`**: 5 (maximum depth of the individual regression estimators)
-- **`learning_rate`**: 0.1 (step size shrinkage used to prevent overfitting)
-
-GridSearchCV was used with 3-fold cross-validation to find the optimal hyperparameters by testing various combinations and selecting the ones that minimized the mean absolute error.
+The best hyperparameters found were:
+- **max_depth**: 10
+- **n_estimators**: 100
 
 #### Model Performance Comparison
 
@@ -252,7 +280,6 @@ The performance of the final model was evaluated using the mean absolute error (
 
 Although the improvement in MAE is marginal, the final model demonstrates a slightly better ability to generalize to unseen data compared to the baseline model. This improvement can be attributed to the additional engineered features that allowed the model to capture more intricate patterns in the data.
 
-#### Visualization of Model Performance
 
 <iframe src="assets/final_model_errors.html" width="800" height="600" frameborder="0"></iframe>
 
@@ -260,3 +287,30 @@ This histogram shows the distribution of prediction errors for the final model. 
 
 By implementing these steps, the final model has shown an improvement over the baseline model, demonstrating the effectiveness of feature engineering and hyperparameter tuning in enhancing model performance.
 
+## Fairness Analysis
+
+### Group 1 and Group 2
+For our fairness analysis, we chose to compare the model's performance between two groups:
+- **Group 1**: Recipes with a low number of ingredients (below the median).
+- **Group 2**: Recipes with a high number of ingredients (above the median).
+
+### Evaluation Metric
+We use the Mean Absolute Error (MAE) to evaluate our model's fairness. The MAE measures the average magnitude of errors in the model's predictions, providing a clear indication of prediction accuracy.
+
+### Hypotheses
+- **Null Hypothesis (H0)**: The model is fair. The MAE for recipes with a low number of ingredients and a high number of ingredients are roughly the same, and any differences are due to random chance.
+- **Alternative Hypothesis (H1)**: The model is unfair. The MAE for recipes with a low number of ingredients is higher than the MAE for recipes with a high number of ingredients.
+
+### Test Statistic and Significance Level
+- **Test Statistic**: The difference in MAE between recipes with a low number of ingredients and a high number of ingredients.
+- **Significance Level**: 0.05
+
+### Results
+- **Observed Difference**: 0.00385
+- **P-value**: 0.39
+
+Given the p-value of 0.39, which is greater than our chosen significance level of 0.05, we fail to reject the null hypothesis. This indicates that there is no significant difference in the MAE between recipes with a low number of ingredients and those with a high number of ingredients. Therefore, we conclude that our model performs fairly between these two groups.
+
+<iframe src="assets/fairness_analysis.html" width="800" height="600" frameborder="0"></iframe>
+
+The histogram above shows the distribution of the differences in MAE obtained from the permutation test. The red dashed line represents the observed difference. The majority of permutation differences are centered around zero, suggesting that any observed difference in MAE between the two groups is likely due to random chance.
