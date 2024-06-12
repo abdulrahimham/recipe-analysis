@@ -84,14 +84,14 @@ This scatter plot shows the relationship between preparation time (in minutes) a
 
 #### Grouped by Preparation Time
 
-<iframe src="assets/grouped_by_time.html" width="800" height="200" frameborder="0"></iframe>
+<iframe src="assets/time_rating.html" width="800" height="200" frameborder="0"></iframe>
 
 This table shows the average rating of recipes grouped by preparation time. By examining the average ratings for different preparation times, we can see that shorter preparation times (0-10 minutes) tend to have the highest average rating. However, there is not a dramatic difference in average ratings across different preparation time ranges, suggesting that preparation time alone might not be a significant factor influencing recipe ratings. This analysis can provide insights into user preferences, helping recipe creators and food bloggers to tailor their content. For instance, if recipes with shorter preparation times consistently receive slightly higher ratings, this might indicate a preference for quick and easy recipes among users.
 
 
 #### Grouped by Calories
 
-<iframe src="assets/grouped_by_calories.html" width="800" height="200" frameborder="0"></iframe>
+<iframe src="assets/calorie_rating.html" width="800" height="200" frameborder="0"></iframe>
 
 This table shows the average rating of recipes grouped by calorie content. By analyzing the average ratings for different calorie ranges, we observe that there is little variation in average ratings across different calorie ranges, indicating that calorie content may not significantly affect user ratings. However, the slightly higher average ratings for lower calorie recipes might suggest a preference for healthier recipes among some users. This analysis can help identify trends in user preferences regarding healthier versus more indulgent recipes, which can inform recipe development and content creation for health-conscious audiences. For example, if lower-calorie recipes tend to have slightly higher ratings, this might indicate a growing interest in healthy eating among users.
 
